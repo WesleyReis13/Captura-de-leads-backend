@@ -1,0 +1,34 @@
+// 1. Qual cliente de banco de dados usar e a URL de conexão
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:123@localhost:5432/mydatabase?schema=public"
+}
+
+// 2. Definição da tabela 'leads'
+model Lead {
+  id         Int      @id @default(autoincrement()) // Chave Primária
+  name       String
+  email      String
+  phone      String
+  objective  String
+  created_at DateTime @default(now())
+
+  // Relação (um lead pode ter um usuário)
+  user User?
+}
+
+// 3. Definição da tabela 'users'
+model User {
+  id                 Int      @id @default(autoincrement()) // Chave Primária
+  lead_id            Int      @unique // Chave Estrangeira (unique garante que um lead só vira um user uma vez)
+  stripe_customer_id String?
+  subscription_status String?
+  created_at         DateTime @default(now())
+
+  // Relação (um user pertence a um lead)
+  lead Lead @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+}
