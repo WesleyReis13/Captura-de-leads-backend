@@ -1,18 +1,25 @@
 
-const { addMessageToQueue } = require('../services/queue.producer');
+const { addWelcomeMessageJob } = require('../services/queue.producer');
 
 async function createLead(req, res) {
-    try {
-        const { name, phone, objective } = req.body;
+  try {
+    const { name, email, whatsapp, objective, routine } = req.body;
 
-       
-        await addMessageToQueue(
-            `${phone}@c.us`, 
-            `Olá ${name}! Vi que seu objetivo é ${objective}. 👋` 
-        );
+    
+    const newLead = await prisma.lead.create({
+      data: { name, email, phone: whatsapp, objective, routine }
+    });
 
-        res.json({ success: true, message: 'Lead criado e mensagem enfileirada!' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    
+    await addWelcomeMessageJob(
+      `${whatsapp}@c.us`, 
+      name, 
+      objective, 
+      routine
+    );
+
+    res.status(201).json({ message: 'Lead criado com sucesso!', lead: newLead });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }
