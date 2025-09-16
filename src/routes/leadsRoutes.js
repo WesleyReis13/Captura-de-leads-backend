@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { addMessageToQueue } = require('../services/queue.producer');
+const { addWelcomeMessageJob } = require('../services/queue.producer');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -28,9 +28,11 @@ router.post('/leads', async (req, res) => {
         });
 
         
-        await addMessageToQueue(
+        await addWelcomeMessageJob(
             `${whatsapp}@c.us`, 
-            `Olá ${name}! 👋 Vi que seu objetivo principal é *${objective}* e você está *${routine}*. Isso é excelente! Em breve te enviaremos mais conteúdos personalizados.` // Mensagem SUPER personalizada
+            name, 
+            objective, 
+            routine
         );
 
         
