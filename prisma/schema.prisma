@@ -15,7 +15,8 @@ model Lead {
   email     String
   phone     String   
   objective String   
-  routine   String   
+  routine   String
+  tags      String[]   
   createdAt DateTime @default(now()) @map("created_at") 
   updatedAt DateTime @updatedAt @map("updated_at")      
 

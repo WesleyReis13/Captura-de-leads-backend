@@ -13,12 +13,12 @@ const redisConnection = {
 const messageQueue = new Queue('whatsapp-messages', { connection: redisConnection });
 
 
-async function addWelcomeMessageJob(to, name, objective, routine) {
+async function addWelcomeMessageJob(to, name, objective, routine, tags) {
   const jobName = 'send-welcome-message'; 
 
   
 
-  const messageText = messageTemplates.WELCOME_MESSAGE(name, objective, routine);
+  const messageText = messageTemplates.WELCOME_MESSAGE(name, objective, routine, tags);
   
   try {
     const job = await messageQueue.add(jobName, {
