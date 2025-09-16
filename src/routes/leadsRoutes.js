@@ -4,11 +4,15 @@ const { addWelcomeMessageJob } = require('../services/queue.producer');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const MessageService = require('../services/messageService');
+const { generateTagsFromLead } = require('../services/tagService');
+
 
 router.post('/leads', async (req, res) => {
     try {
         
         const { name, email, whatsapp, objective, routine } = req.body;
+
+        const tags = generateTagsFromLead({ objective, routine });
 
         
         if (!name || !email || !whatsapp || !objective || !routine) {
@@ -24,29 +28,33 @@ router.post('/leads', async (req, res) => {
                 email,
                 phone: whatsapp,
                 objective,    
-                routine       
+                routine,
+                tags       
             }
         });
 
         
-        await addWelcomeMessageJob(
+        /*await addWelcomeMessageJob(
             `${whatsapp}@c.us`, 
             name, 
             objective, 
-            routine
-        );
+            routine,
+            tags
+        );*/
 
         await MessageService.sendWelcomeMessage({
             phone: whatsapp,
             name,
             objective,
-            routine
+            routine,
+            tags
         });
 
         
         res.status(201).json({
             message: 'Lead criado com sucesso!',
-            lead: newLead
+            lead: newLead,
+            tags
         });
 
     } catch (error) {

@@ -1,25 +1,24 @@
 
-
 const messageTemplates = {
-  
-  WELCOME_MESSAGE: (name, objective, routine) => {
-    return `Olá ${name}! 👋 
-Tudo bem? 
-Vi que seu objetivo principal é *${objective}* e você está *${routine}*. 
-Isso é excelente! Nos próximos dias vou te enviar conteúdos exclusivos sobre ${objective} para te ajudar.`;
-  },
+  WELCOME_MESSAGE: (name, objective, routine, tags) => {
+    
+    let message = `Olá ${name}! 👋 `;
 
-  
-  FOLLOW_UP_1: (name) => {
-    return `Ei ${name}! 😊 
-Lembra que você quer melhorar seus hábitos? 
-Te mandei um material super especial sobre isso no seu email!`;
-  },
+    
+    if (tags.includes('lead-emagrecimento')) {
+      message += `Vi que seu objetivo é *emagrecer*. Tenho um guia exclusivo sobre alimentação para perda de gordura!`;
+    } else if (tags.includes('lead-ganho-massa')) {
+      message += `Vi que seu objetivo é *ganhar massa muscular*. Preparei um material especial sobre hipertrofia para você!`;
+    } else {
+      message += `Vi que seu objetivo é *${objective}*. Isso é excelente!`;
+    }
 
-  
-  CAMPAIGN_PROMO: (name, discount) => {
-    return `*OFERTA ESPECIAL!* 🎁
-${name}, temos um desconto de ${discount}% exclusivo para você nos próximos 7 dias!`;
+    
+    if (tags.includes('lead-iniciante')) {
+      message += `\n\nComo você está começando agora, vou te enviar um plano inicial bem tranquilo!`;
+    }
+
+    return message;
   }
 };
 
