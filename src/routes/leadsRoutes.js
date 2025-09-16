@@ -3,6 +3,7 @@ const router = express.Router();
 const { addWelcomeMessageJob } = require('../services/queue.producer');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const MessageService = require('../services/messageService');
 
 router.post('/leads', async (req, res) => {
     try {
@@ -34,6 +35,13 @@ router.post('/leads', async (req, res) => {
             objective, 
             routine
         );
+
+        await MessageService.sendWelcomeMessage({
+            phone: whatsapp,
+            name,
+            objective,
+            routine
+        });
 
         
         res.status(201).json({

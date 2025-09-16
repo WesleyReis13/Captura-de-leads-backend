@@ -1,6 +1,7 @@
 
 const { Queue } = require('bullmq');
 const Redis = require('redis');
+const messageTemplates = require('./messageTemplates');
 
 
 const redisConnection = {
@@ -16,15 +17,13 @@ async function addWelcomeMessageJob(to, name, objective, routine) {
   const jobName = 'send-welcome-message'; 
 
   
-  const personalizedText = `Olá ${name}! 👋 
-Tudo bem? 
-Vi que seu objetivo principal é *${objective}* e você está *${routine}*. 
-Isso é excelente! Nos próximos dias vou te enviar conteúdos exclusivos sobre ${objective} para te ajudar.`;
 
+  const messageText = messageTemplates.WELCOME_MESSAGE(name, objective, routine);
+  
   try {
     const job = await messageQueue.add(jobName, {
       to,
-      text: personalizedText
+      text: messageText
     });
     console.log(`📤 Job de boas-vindas (${job.id}) adicionado na fila para ${to}`);
     return job;
