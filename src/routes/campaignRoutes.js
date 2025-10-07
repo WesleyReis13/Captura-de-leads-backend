@@ -1,8 +1,10 @@
 const express = require("express");
 const multer = require("multer");
 const xlsx = require("xlsx");
-const router = express.Router();
+const { PrismaClient } = require("@prisma/client");
 
+const router = express.Router();
+const prisma = new PrismaClient();
 const upload = multer({ dest: "uploads/" });
 
 router.post("/upload-campaign", upload.single("file"), async (req, res) => {
@@ -16,18 +18,39 @@ router.post("/upload-campaign", upload.single("file"), async (req, res) => {
     const sheetName = workbook.SheetNames[0];
     const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-    
+    if (data.length === 0) {
+      return res.status(400).json({ error: "Planilha vazia ou inválida" });
+    }
 
-    console.log("Dados da planilha:", data);
+    
+    const campaign = await prisma.campaign.create({
+      data: {
+        name: `Campanha - ${new Date().toISOString()}`, 
+        status: "pending",
+      },
+    });
 
     
+    const messagesData = data.map((row) => ({
+      name: row.Nome || "Sem nome",
+      phone: String(row.Telefone),
+      message: row.Mensagem || "",
+      sendAt: row.DataEnvio ? new Date(row.DataEnvio) : new Date(),
+      campaignId: campaign.id,
+    }));
+
+    
+    await prisma.campaignMessage.createMany({
+      data: messagesData,
+    });
 
     return res.json({
       message: "Campanha importada com sucesso",
-      totalContatos: data.length,
+      campaignId: campaign.id,
+      totalContatos: messagesData.length,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Erro ao processar campanha:", err);
     res.status(500).json({ error: "Erro ao processar a campanha" });
   }
 });

@@ -29,6 +29,10 @@ app.use('/api', stripeRoutes);
 const stripeWebhookRoutes = require('./routes/stripeWebhook');
 app.use('/api', stripeWebhookRoutes);
 
+
+const campaignRoutes = require('./routes/campaignRoutes');
+app.use('/api', campaignRoutes);
+
 app.get('/', (req, res) => res.send('Hello World9!'));
 
 module.exports = app;
