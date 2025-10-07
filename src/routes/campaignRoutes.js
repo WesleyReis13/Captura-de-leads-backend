@@ -2,6 +2,8 @@ const express = require("express");
 const multer = require("multer");
 const xlsx = require("xlsx");
 const { PrismaClient } = require("@prisma/client");
+const { addCampaignMessageJob } = require("../services/queue.producer");
+
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -43,6 +45,16 @@ router.post("/upload-campaign", upload.single("file"), async (req, res) => {
     await prisma.campaignMessage.createMany({
       data: messagesData,
     });
+
+    for (const msg of messagesData) {
+      await addCampaignMessageJob({
+        campaignId: campaign.id,
+        name: msg.name,
+        phone: msg.phone,
+        message: msg.message,
+        sendAt: msg.sendAt,
+      });
+    }
 
     return res.json({
       message: "Campanha importada com sucesso",
