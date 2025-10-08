@@ -17,12 +17,16 @@ function parseCampaign(filePath) {
   });
 
   
-  const parsed = rows.map(row => ({
-    name: row["Nome"].trim(),
-    phone: row["Telefone"].toString().replace(/\D/g, ""),
-    message: row["Mensagem"].trim(),
-    sendAt: new Date(row["DataEnvio"])
-  }));
+      const parsed = rows.map(row => {
+      const cleanPhone = row["Telefone"].toString().replace(/\D/g, "");
+      return {
+        name: row["Nome"].trim(),
+        phone: `${cleanPhone}@c.us`,
+        message: row["Mensagem"].trim(),
+        sendAt: new Date(row["DataEnvio"])
+      };
+    });
+
 
   return parsed;
 }
