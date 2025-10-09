@@ -33,7 +33,7 @@ app.use('/api', stripeWebhookRoutes);
 const campaignRoutes = require('./routes/campaignRoutes');
 app.use('/api', campaignRoutes);
 
-const campaignRoutes = require('./routes/auth');
+const authRouter = require('./routes/auth');
 app.use("/api", authRouter);
 
 app.get('/', (req, res) => res.send('Hello World9!'));

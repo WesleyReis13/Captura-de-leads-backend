@@ -1,9 +1,9 @@
-import { Router } from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import { getUserByEmail } from "../services/userService";
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const { getUserByEmail } = require("../services/userService");
 
-const router = Router();
+const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "segredo-super-secreto";
 
 router.post("/login", async (req, res) => {
@@ -26,4 +26,4 @@ router.post("/login", async (req, res) => {
   res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
 });
 
-export default router;
+module.exports = router;
