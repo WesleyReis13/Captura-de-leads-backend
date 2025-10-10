@@ -4,8 +4,9 @@ const { addWelcomeMessageJob,addCampaignMessageJob } = require('./queue.producer
 
 class MessageService {
   static async sendWelcomeMessage(leadData) {
-    const { phone, name, objective, routine, tags } = leadData;
-    return await addWelcomeMessageJob(`${phone}@c.us`, name, objective, routine, tags);
+    const { id, phone, name, objective, routine, tags, email } = leadData;
+
+    return await addWelcomeMessageJob(`${phone}@c.us`, name, objective, routine, tags, id, email);
   }
 
   

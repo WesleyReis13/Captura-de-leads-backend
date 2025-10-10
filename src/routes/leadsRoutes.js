@@ -31,12 +31,14 @@ router.post('/leads', async (req, res) => {
             }
         });
 
-        
-        // await addWelcomeMessageJob(`${whatsapp}@c.us`, name, objective, routine, tags);
+        console.log('📝 Lead criado no banco:', newLead);
 
+        
         await MessageService.sendWelcomeMessage({
+            id: newLead.id,       
             phone: whatsapp,
             name,
+            email: email,          
             objective,
             routine,
             tags
@@ -66,13 +68,23 @@ router.get('/leads', async (req, res) => {
       }
     });
 
+    
+    const priceIdToPlanName = {
+      'price_1S94qSRpvj2LvgkNJ4c4eUnz': 'ESSENTIAL',
+      'price_1S94rSRpvj2LvgkNSVKdPaqW': 'ADVANCED', 
+      'price_1S94sCRpvj2LvgkN1mPiGhLp': 'PREMIUM'
+    };
+
     const leadsWithStatus = leads.map(lead => {
       const activeSub = lead.user?.subscriptions.find(sub => sub.status === 'active');
+
+      
+      const planName = activeSub?.priceId ? priceIdToPlanName[activeSub.priceId] : null;
 
       return {
         ...lead,
         isClient: !!activeSub,
-        plan: activeSub?.priceId || null
+        plan: planName || activeSub?.priceId || null 
       };
     });
 
