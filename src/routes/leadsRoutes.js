@@ -68,24 +68,23 @@ router.get('/leads', async (req, res) => {
       }
     });
 
-    console.log('🔍 DEBUG - Todos os leads com users:', JSON.stringify(leads, null, 2));
+    
+    const priceIdToPlanName = {
+      'price_1S94qSRpvj2LvgkNJ4c4eUnz': 'ESSENTIAL',
+      'price_1S94rSRpvj2LvgkNSVKdPaqW': 'ADVANCED', 
+      'price_1S94sCRpvj2LvgkN1mPiGhLp': 'PREMIUM'
+    };
 
     const leadsWithStatus = leads.map(lead => {
       const activeSub = lead.user?.subscriptions.find(sub => sub.status === 'active');
 
-      console.log(`📊 Lead ${lead.id}:`, {
-        name: lead.name,
-        hasUser: !!lead.user,
-        userId: lead.user?.id,
-        subscriptionsCount: lead.user?.subscriptions?.length || 0,
-        activeSub: activeSub,
-        planType: activeSub?.priceId
-      });
+      
+      const planName = activeSub?.priceId ? priceIdToPlanName[activeSub.priceId] : null;
 
       return {
         ...lead,
         isClient: !!activeSub,
-        plan: activeSub?.priceId || null
+        plan: planName || activeSub?.priceId || null 
       };
     });
 
