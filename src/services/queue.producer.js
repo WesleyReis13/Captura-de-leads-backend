@@ -9,11 +9,11 @@ const redisConnection = {
 
 const messageQueue = new Queue('whatsapp-messages', { connection: redisConnection });
 
-// 🔽 ADICIONAR leadId E email COMO PARÂMETROS
+
 async function addWelcomeMessageJob(to, name, objective, routine, tags, leadId, email) {
   const jobName = 'send-welcome-message';
   
-  // 🔽 AGORA leadId E email EXISTEM (são parâmetros)
+  
   const checkoutUrl = `http://localhost:5173/checkout?leadId=${leadId}&email=${encodeURIComponent(email)}`;
 
   const messageText = messageTemplates.WELCOME_MESSAGE(
@@ -30,7 +30,7 @@ async function addWelcomeMessageJob(to, name, objective, routine, tags, leadId, 
       text: messageText
     });
     console.log(`📤 Job de boas-vindas (${job.id}) adicionado na fila para ${to}`);
-    console.log(`🔗 Link gerado: ${checkoutUrl}`); // ← PARA DEBUG
+    console.log(`🔗 Link gerado: ${checkoutUrl}`);
     return job;
   } catch (error) {
     console.error('❌ Erro ao adicionar job de boas-vindas:', error);
