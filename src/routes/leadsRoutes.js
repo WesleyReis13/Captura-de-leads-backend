@@ -20,11 +20,24 @@ router.post('/leads', async (req, res) => {
             });
         }
 
+        
+        let formattedWhatsapp = whatsapp;
+        
+        
+        const apenasNumeros = whatsapp.replace(/\D/g, '');
+        
+        
+        if (!apenasNumeros.startsWith('55')) {
+            formattedWhatsapp = '55' + apenasNumeros;
+        } else {
+            formattedWhatsapp = apenasNumeros;
+        }
+
         const newLead = await prisma.lead.create({
             data: {
                 name,
                 email,
-                phone: whatsapp,
+                phone: formattedWhatsapp,
                 objective,    
                 routine,
                 tags       
@@ -36,7 +49,7 @@ router.post('/leads', async (req, res) => {
         
         await MessageService.sendWelcomeMessage({
             id: newLead.id,       
-            phone: whatsapp,
+            phone: formattedWhatsapp,
             name,
             email: email,          
             objective,

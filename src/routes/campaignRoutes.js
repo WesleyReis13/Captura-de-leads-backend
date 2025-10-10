@@ -26,7 +26,7 @@ router.post("/upload-campaign", upload.single("file"), async (req, res) => {
       data: { name: `Campanha - ${new Date().toISOString()}`, status: "pending" },
     });
 
-    const report = []; // ← Array de resultados
+    const report = [];
 
     for (const [index, row] of data.entries()) {
       try {
@@ -38,10 +38,10 @@ router.post("/upload-campaign", upload.single("file"), async (req, res) => {
           campaignId: campaign.id,
         };
 
-        // Adiciona job na fila
+        
         await addCampaignMessageJob(messageData);
 
-        // Marca como sucesso
+        
         report.push({
           row: index + 1,
           name: messageData.name,
@@ -50,7 +50,7 @@ router.post("/upload-campaign", upload.single("file"), async (req, res) => {
         });
 
       } catch (error) {
-        // Marca como falha
+        
         report.push({
           row: index + 1,
           name: row.Nome || "Sem nome",

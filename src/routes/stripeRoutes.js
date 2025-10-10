@@ -6,6 +6,12 @@ router.post('/create-checkout-session', async (req, res) => {
   try {
     const { planType, customerEmail, leadId } = req.body;
 
+    console.log('🎯 Dados recebidos na API create-checkout-session:');
+    console.log('  - planType:', planType);
+    console.log('  - customerEmail:', customerEmail);
+    console.log('  - leadId:', leadId);
+    console.log('  - PRICE_IDS disponíveis:', PRICE_IDS);
+
     
     const validPlans = ['ESSENTIAL', 'ADVANCED', 'PREMIUM'];
     if (!validPlans.includes(planType)) {
