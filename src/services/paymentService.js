@@ -1,49 +1,73 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { PRICE_IDS } = require('./stripeService'); 
 
 async function handleSuccessfulPayment(session) {
   try {
     const { metadata } = session;
     const leadId = metadata?.leadId ? parseInt(metadata.leadId) : null;
-    const planType = metadata?.planType; // 🔽 CAPTURAR O PLANO
+    const planType = metadata?.planType;
 
     console.log(`✅ Pagamento aprovado para lead: ${leadId}, Plano: ${planType}`);
 
-    // 1. PRIMEIRO: Atualizar o LEAD para cliente + salvar plano
+    
+    const priceId = PRICE_IDS[planType];
+    if (!priceId) {
+      throw new Error(`PriceId não encontrado para o plano: ${planType}`);
+    }
+
+    console.log(`💰 PriceId: ${priceId}`);
+
+    
     const updatedLead = await prisma.lead.update({
       where: { id: leadId },
       data: {
-        status: 'cliente',           // 🔽 MUDAR STATUS
-        plan_type: planType,         // 🔽 SALVAR PLANO
+        status: 'cliente',
+        plan_type: planType,
         updated_at: new Date()
       }
     });
 
     console.log(`📊 Lead atualizado para cliente: ${updatedLead.id}`);
 
-    // 2. DEPOIS: Criar/atualizar User (se necessário)
+    
     const user = await prisma.user.upsert({
       where: { leadId: leadId },
       update: {
         subscriptionStatus: 'active',
         stripeCustomerId: session.customer,
-        planType: planType,          // 🔽 SALVAR PLANO AQUI TAMBÉM
+        planType: planType,
       },
       create: {
         leadId: leadId,
         stripeCustomerId: session.customer,
         subscriptionStatus: 'active',
-        planType: planType,          // 🔽 SALVAR PLANO AQUI TAMBÉM
+        planType: planType,
       }
     });
 
-    console.log(`🎉 Usuário criado/atualizado: ${user.id}, Plano: ${planType}`);
+    console.log(`🎉 Usuário criado/atualizado: ${user.id}`);
+
+    
+    const subscription = await prisma.subscription.create({
+      data: {
+        userId: user.id,
+        stripeSubscriptionId: session.subscription,
+        stripeCustomerId: session.customer,
+        status: 'active',
+        priceId: priceId,
+        planType: planType,
+      }
+    });
+
+    console.log(`📅 Subscription criada: ${subscription.id}`);
+    console.log(`🎯 Status: ${subscription.status}, PriceId: ${subscription.priceId}`);
 
   } catch (error) {
     console.error('❌ Erro ao processar pagamento:', error.message);
-    // 🔽 LOG MAIS DETALHADO PARA DEBUG
     console.error('Session metadata:', session.metadata);
-    console.error('LeadId tentado:', session.metadata?.leadId);
+    console.error('PlanType:', session.metadata?.planType);
+    console.error('PRICE_IDS disponíveis:', PRICE_IDS);
   }
 }
 

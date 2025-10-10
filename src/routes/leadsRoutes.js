@@ -68,8 +68,19 @@ router.get('/leads', async (req, res) => {
       }
     });
 
+    console.log('🔍 DEBUG - Todos os leads com users:', JSON.stringify(leads, null, 2));
+
     const leadsWithStatus = leads.map(lead => {
       const activeSub = lead.user?.subscriptions.find(sub => sub.status === 'active');
+
+      console.log(`📊 Lead ${lead.id}:`, {
+        name: lead.name,
+        hasUser: !!lead.user,
+        userId: lead.user?.id,
+        subscriptionsCount: lead.user?.subscriptions?.length || 0,
+        activeSub: activeSub,
+        planType: activeSub?.priceId
+      });
 
       return {
         ...lead,
