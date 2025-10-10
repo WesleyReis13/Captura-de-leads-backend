@@ -31,12 +31,14 @@ router.post('/leads', async (req, res) => {
             }
         });
 
-        
-        // await addWelcomeMessageJob(`${whatsapp}@c.us`, name, objective, routine, tags);
+        console.log('📝 Lead criado no banco:', newLead);
 
+        
         await MessageService.sendWelcomeMessage({
+            id: newLead.id,       
             phone: whatsapp,
             name,
+            email: email,          
             objective,
             routine,
             tags
