@@ -10,7 +10,6 @@ async function handleSuccessfulPayment(session) {
 
     console.log(`✅ Pagamento aprovado para lead: ${leadId}, Plano: ${planType}`);
 
-    
     const priceId = PRICE_IDS[planType];
     if (!priceId) {
       throw new Error(`PriceId não encontrado para o plano: ${planType}`);
@@ -24,7 +23,7 @@ async function handleSuccessfulPayment(session) {
       data: {
         status: 'cliente',
         plan_type: planType,
-        updated_at: new Date()
+        updatedAt: new Date()
       }
     });
 
@@ -53,21 +52,20 @@ async function handleSuccessfulPayment(session) {
       data: {
         userId: user.id,
         stripeSubscriptionId: session.subscription,
-        stripeCustomerId: session.customer,
         status: 'active',
         priceId: priceId,
-        planType: planType,
+        /*planType: planType,*/
       }
     });
 
     console.log(`📅 Subscription criada: ${subscription.id}`);
     console.log(`🎯 Status: ${subscription.status}, PriceId: ${subscription.priceId}`);
 
+    console.log('🎊🎊🎊 PAGAMENTO PROCESSADO COM SUCESSO! 🎊🎊🎊');
+
   } catch (error) {
     console.error('❌ Erro ao processar pagamento:', error.message);
-    console.error('Session metadata:', session.metadata);
-    console.error('PlanType:', session.metadata?.planType);
-    console.error('PRICE_IDS disponíveis:', PRICE_IDS);
+    console.error('Stack trace:', error.stack);
   }
 }
 

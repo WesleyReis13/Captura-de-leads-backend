@@ -19,6 +19,9 @@ model Lead {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  status    String?  @default("lead") // lead, cliente
+  plan_type String?  // ESSENTIAL, ADVANCED, PREMIUM
+
   
   user User?
 
@@ -31,6 +34,7 @@ model User {
   leadId             Int       @unique // Relação com o lead original
   stripeCustomerId   String?   @unique // ID do cliente no Stripe
   subscriptionStatus String    @default("inactive") // active, inactive, canceled
+  planType           String? 
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 
