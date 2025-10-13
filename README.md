@@ -67,8 +67,7 @@ REDIS_HOST="localhost"
 REDIS_PORT=6379
 ```
 
-> ⚠️ **Atenção:** não adicione valores reais no README nem envie o arquivo `.env` para o repositório.  
-> Adicione o arquivo `.env` ao `.gitignore` para garantir que ele não seja versionado.
+
 
 ---
 
