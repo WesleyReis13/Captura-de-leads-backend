@@ -53,14 +53,14 @@ Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis (ex
 
 ```bash
 # Banco de dados
-DATABASE_URL="mysql://usuario:senha@localhost:3306/nome_do_banco"
+DATABASE_URL="mysql://<user>:<password>@localhost:3306/<db_name>"
 
 # Stripe
-STRIPE_SECRET_KEY="sua_chave_secreta_da_stripe"
-STRIPE_WEBHOOK_SECRET="seu_webhook_secret"
+STRIPE_SECRET_KEY=""
+STRIPE_WEBHOOK_SECRET=""
 
 # JWT
-JWT_SECRET="sua_chave_jwt"
+JWT_SECRET=""
 
 # Redis
 REDIS_HOST="localhost"
