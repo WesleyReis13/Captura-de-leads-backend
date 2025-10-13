@@ -37,58 +37,72 @@ O sistema também realiza **envio recorrente de mensagens** e **gera relatórios
 ```bash
 git clone https://github.com/WesleyReis13/Captura-de-leads
 cd captura-leads-backend
+```
+
+---
 
 ### 2. Instale as dependências
 ```bash
 npm install
+```
 
+---
 
-### 3. Configure o arquivo .env 
+### 3. Configure o arquivo `.env`
+Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis (exemplo):
 
+```bash
 # Banco de dados
-DATABASE_URL="mysql://<user>:<password>@localhost:3306/<db_name>"
+DATABASE_URL="mysql://usuario:senha@localhost:3306/nome_do_banco"
 
 # Stripe
-STRIPE_SECRET_KEY=""
-STRIPE_WEBHOOK_SECRET=""
+STRIPE_SECRET_KEY="sua_chave_secreta_da_stripe"
+STRIPE_WEBHOOK_SECRET="seu_webhook_secret"
 
 # JWT
-JWT_SECRET=""
+JWT_SECRET="sua_chave_jwt"
 
 # Redis
 REDIS_HOST="localhost"
 REDIS_PORT=6379
+```
 
+> ⚠️ **Atenção:** não adicione valores reais no README nem envie o arquivo `.env` para o repositório.  
+> Adicione o arquivo `.env` ao `.gitignore` para garantir que ele não seja versionado.
 
-
+---
 
 ### 4. Configure o Prisma
-
+```bash
 npx prisma generate
 npx prisma migrate dev
+```
 
+---
 
-## 5. Execute o servidor
-
+### 5. Execute o servidor
+```bash
 npm run dev
+```
 
+O servidor será iniciado em:
+```
+http://localhost:3000
+```
 
-⚙️ Fluxo Geral do Sistema
+---
 
-- O usuário preenche o formulário de triagem no site.
+## ⚙️ Fluxo Geral do Sistema
 
-Os dados são salvos via API neste backend.
+- O usuário preenche o formulário de triagem no site.  
+- Os dados são salvos via API neste backend.  
+- O usuário pode assinar um plano via **Stripe**.  
+- O cliente pode importar uma planilha `.xlsx` com contatos.  
+- As mensagens são enviadas via **Baileys (WhatsApp)**.  
+- O sistema gera e envia relatórios automáticos aos assinantes.
 
-O usuário pode assinar um plano via Stripe.
+---
 
-O cliente pode importar uma planilha .xlsx com contatos.
-
-As mensagens são enviadas via Baileys (WhatsApp).
-
-O sistema gera e envia relatórios automáticos aos assinantes.
-
-
-## 👨‍💻 Desenvolvido por
-
+## 👨‍💻 Desenvolvido por  
 **Wesley Reis**  
-Frontend Developer • [LinkedIn](https://www.linkedin.com/in/wesleysnipeslopes/)
+Backend Developer • [LinkedIn](https://www.linkedin.com/in/wesleysnipeslopes/)
